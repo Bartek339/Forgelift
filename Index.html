@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b09">
+  <title>ForgeFit — Training OS</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080b09;
+      --panel: #111713;
+      --line: #26342b;
+      --green: #8cff9b;
+      --muted: #98a79b;
+      --text: #f0f5f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 15px system-ui, sans-serif;
+    }
+    header {
+      padding: 20px; border-bottom: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .logo { font-size: 23px; font-weight: 850; letter-spacing: -1px; }
+    .logo span { color: var(--green); }
+    .status { color: var(--green); font-size: 12px; }
+    main { width: min(100% - 28px, 900px); margin: 24px auto; }
+    .eyebrow { color: var(--green); font-size: 12px; letter-spacing: 2px; }
+    h1 { font-size: clamp(30px, 7vw, 48px); margin: 8px 0; }
+    p { color: var(--muted); line-height: 1.6; }
+    .grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px; margin: 22px 0;
+    }
+    .card {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 16px; padding: 17px; min-width: 0;
+    }
+    .label { color: var(--muted); font-size: 12px; }
+    .value { font-size: 27px; font-weight: 750; margin-top: 8px; }
+    .green { color: var(--green); }
+    h2 { font-size: 18px; margin: 0 0 16px; }
+    label { display: block; color: var(--muted); font-size: 12px; margin: 12px 0 6px; }
+    input, select, button {
+      width: 100%; border-radius: 10px; padding: 12px;
+      font: inherit; border: 1px solid var(--line);
+    }
+    input, select { background: #090e0b; color: var(--text); }
+    button {
+      background: var(--green); color: #061008;
+      border: 0; font-weight: 800; cursor: pointer; margin-top: 12px;
+    }
+    button.secondary { background: #202a23; color: var(--text); border: 1px solid var(--line); }
+    .exercise {
+      display: grid; grid-template-columns: 1fr 80px 80px;
+      gap: 8px; align-items: center; padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .exercise input { padding: 9px 5px; min-width: 0; }
+    .small { font-size: 12px; color: var(--muted); }
+    #message { color: var(--green); min-height: 20px; font-size: 13px; }
+    footer { text-align: center; padding: 28px; color: var(--muted); font-size: 12px; }
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+      .card { padding: 13px; }
+      .exercise { grid-template-columns: 1fr 68px 68px; gap: 5px; }
+      .value { font-size: 23px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">FORGE<span>FIT</span></div>
+    <div class="status">● TRAINING OS</div>
+  </header>
+
+  <main>
+    <div class="eyebrow">YOUR TRAINING. YOUR DATA.</div>
+    <h1>Buduj <span class="green">progres.</span></h1>
+    <p>Twój trening, Twoje zasady. Zapisuj serie, kontroluj ciężar i śledź postępy.</p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Zapisane treningi</div>
+        <div class="value" id="sessions">0</div>
+      </div>
+      <div class="card">
+        <div class="label">Wykonane serie</div>
+        <div class="value" id="sets">0</div>
+      </div>
+      <div class="card">
+        <div class="label">Masa ciała (kg)</div>
+        <div class="value" id="bodyweight">0</div>
+      </div>
+      <div class="card">
+        <div class="label">Status progresji</div>
+        <div class="value green" style="font-size:19px">Gotowy</div>
+      </div>
+    </div>
+
+    <section class="card">
+      <h2>Ustawienia treningu</h2>
+      <label for="workout">Nazwa treningu</label>
+      <input id="workout" placeholder="Np. Góra A">
+      <label for="weight">Masa ciała (kg)</label>
+      <input id="weight" type="number" min="0" step="0.1" value="0">
+      <button id="start">Rozpocznij trening</button>
+      <p id="message" role="status"></p>
+    </section>
+
+    <section class="card" style="margin-top:14px">
+      <h2>Dodaj serię</h2>
+      <label for="exerciseName">Ćwiczenie</label>
+      <input id="exerciseName" placeholder="Np. Wyciskanie leżąc">
+      <div class="grid" style="margin:0">
+        <div>
+          <label for="kg">Ciężar (kg)</label>
+          <input id="kg" type="number" min="0" step="0.5" value="0">
+        </div>
+        <div>
+          <label for="reps">Powtórzenia</label>
+          <input id="reps" type="number" min="0" step="1" value="0">
+        </div>
+        <div>
+          <label for="rir">RIR</label>
+          <input id="rir" type="number" min="0" max="10" value="0">
+        </div>
+        <div>
+          <label for="rpe">RPE (1–10)</label>
+          <input id="rpe" type="number" min="1" max="10" step="0.5" placeholder="—">
+        </div>
+      </div>
+      <button id="addSet">Dodaj serię</button>
+      <div id="history" class="small" style="margin-top:14px">Brak zapisanych serii.</div>
+    </section>
+
+    <section class="card" style="margin-top:14px">
+      <h2>Odpoczynek</h2>
+      <div class="value" id="timer">01:30</div>
+      <button id="timerButton">Start 90 s</button>
+      <button class="secondary" id="resetTimer">Reset timera</button>
+    </section>
+
+    <footer>FORGEFIT · Wersja startowa · Dane nie są jeszcze synchronizowane z kontem.</footer>
+  </main>
+
+  <script>
+    let sessionCount = 0;
+    let setCount = 0;
+    let remaining = 90;
+    let interval = null;
+    let activeWorkout = false;
+
+    const $ = id => document.getElementById(id);
+
+    function showTime() {
+      $('timer').textContent =
+        String(Math.floor(remaining / 60)).padStart(2, '0') + ':' +
+        String(remaining % 60).padStart(2, '0');
+    }
+
+    $('start').addEventListener('click', () => {
+      const name = $('workout').value.trim();
+      const bodyweight = Number($('weight').value);
+      if (!name) {
+        $('message').textContent = 'Wpisz nazwę treningu.';
+        return;
+      }
+      if (!Number.isFinite(bodyweight) || bodyweight < 0) {
+        $('message').textContent = 'Podaj prawidłową masę ciała.';
+        return;
+      }
+      sessionCount++;
+      activeWorkout = true;
+      $('sessions').textContent = sessionCount;
+      $('bodyweight').textContent = bodyweight;
+      $('message').textContent = 'Trening "' + name + '" rozpoczęty.';
+    });
+
+    $('addSet').addEventListener('click', () => {
+      if (!activeWorkout) {
+        $('message').textContent = 'Najpierw rozpocznij trening.';
+        return;
+      }
+      const name = $('exerciseName').value.trim();
+      const kg = Number($('kg').value);
+      const reps = Number($('reps').value);
+      const rir = Number($('rir').value);
+      const rpeText = $('rpe').value;
+      const rpe = rpeText === '' ? null : Number(rpeText);
+
+      if (!name || !Number.isFinite(kg) || kg < 0 ||
+          !Number.isInteger(reps) || reps < 0 ||
+          !Number.isInteger(rir) || rir < 0 || rir > 10 ||
+          (rpe !== null && (!Number.isFinite(rpe) || rpe < 1 || rpe > 10))) {
+        $('message').textContent = 'Sprawdź ćwiczenie, ciężar, powtórzenia i RIR/RPE.';
+        return;
+      }
+
+      setCount++;
+      $('sets').textContent = setCount;
+      const row = document.createElement('div');
+      row.className = 'exercise';
+      const details = document.createElement('div');
+      details.textContent = name;
+      const load = document.createElement('div');
+      load.textContent = kg + ' kg';
+      const count = document.createElement('div');
+      count.textContent = reps + ' powt.';
+      $('history').prepend(row);
+      row.append(details, load, count);
+      $('message').textContent = 'Seria dodana. Pamiętaj: to wersja lokalna.';
+    });
+
+    $('timerButton').addEventListener('click', () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+        $('timerButton').textContent = 'Wznów timer';
+        return;
+      }
+      if (remaining <= 0) remaining = 90;
+      $('timerButton').textContent = 'Pauza';
+      interval = setInterval(() => {
+        remaining--;
+        showTime();
+        if (remaining <= 0) {
+          clearInterval(interval);
+          interval = null;
+          $('timerButton').textContent = 'Start 90 s';
+          $('message').textContent = 'Czas odpoczynku minął.';
+        }
+      }, 1000);
+    });
+
+    $('resetTimer').addEventListener('click', () => {
+      if (interval) clearInterval(interval);
+      interval = null;
+      remaining = 90;
+      showTime();
+      $('timerButton').textContent = 'Start 90 s';
+    });
+  </script>
+</body>
+</html>
